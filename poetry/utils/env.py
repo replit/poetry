@@ -778,13 +778,6 @@ class EnvManager(object):
 
         if not venv.exists():
             if create_venv is False:
-                io.write_line(
-                    "<fg=black;bg=yellow>"
-                    "Skipping virtualenv creation, "
-                    "as specified in config file."
-                    "</>"
-                )
-
                 return self.get_system_env()
 
             io.write_line(
