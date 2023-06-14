@@ -1037,22 +1037,17 @@ class Env(object):
         return self._platlib
 
     @property
-    def pylibs_dir(self):
-        if not hasattr(self, '_pylibs_dir'):
-            pylibs_dir = None
-            pypath = os.environ.get('PYTHONPATH')
-            if pypath:
-                pylibs_pattern = re.compile(r'/home/runner/[^\/]+/\.pythonlibs/')
-                for p in pypath.split(':'):
-                    if pylibs_pattern.match(p):
-                        pylibs_dir = p
-                        break
-            self._pylibs_dir = pylibs_dir
+    def userbase(self):
+        if not hasattr(self, '_userbase'):
+            self._userbase = os.environ.get('PYTHONUSERBASE')
 
-        return self._pylibs_dir
+        return self._userbase
 
     def is_path_relative_to_lib(self, path):  # type: (Path) -> bool
-        for lib_path in [self.purelib, self.platlib, self.pylibs_dir]:
+        lib_paths = [self.purelib, self.platlib]
+        if self.userbase:
+            lib_paths.append(self.userbase)
+        for lib_path in lib_paths:
             try:
                 path.relative_to(lib_path)
                 return True
