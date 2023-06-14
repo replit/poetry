@@ -778,13 +778,6 @@ class EnvManager(object):
 
         if not venv.exists():
             if create_venv is False:
-                io.write_line(
-                    "<fg=black;bg=yellow>"
-                    "Skipping virtualenv creation, "
-                    "as specified in config file."
-                    "</>"
-                )
-
                 return self.get_system_env()
 
             io.write_line(
@@ -1043,14 +1036,23 @@ class Env(object):
 
         return self._platlib
 
+    @property
+    def userbase(self):
+        if not hasattr(self, '_userbase'):
+            self._userbase = os.environ.get('PYTHONUSERBASE')
+
+        return self._userbase
+
     def is_path_relative_to_lib(self, path):  # type: (Path) -> bool
-        for lib_path in [self.purelib, self.platlib]:
+        lib_paths = [self.purelib, self.platlib]
+        if self.userbase:
+            lib_paths.append(self.userbase)
+        for lib_path in lib_paths:
             try:
                 path.relative_to(lib_path)
                 return True
             except ValueError:
                 pass
-
         return False
 
     @property
