@@ -1846,6 +1846,12 @@ class GenericEnv(VirtualEnv):
     def is_venv(self) -> bool:
         return self._path != self._base
 
+    @property
+    def sys_path(self) -> list[str]:
+        if self._child_env is not None:
+            return self._child_env.sys_path
+        else:
+            return super(VirtualEnv, self).sys_path
 
 class NullEnv(SystemEnv):
     def __init__(
