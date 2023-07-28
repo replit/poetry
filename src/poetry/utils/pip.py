@@ -30,8 +30,8 @@ def pip_install(
         "--disable-pip-version-check",
         "--isolated",
         "--no-input",
-        "--prefix",
-        str(environment.path),
+        # "--prefix",
+        # str(environment.path),
     ]
 
     if not is_wheel and not editable:
