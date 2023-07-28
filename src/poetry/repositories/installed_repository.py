@@ -238,7 +238,12 @@ class InstalledRepository(Repository):
         seen = set()
         skipped = set()
 
-        for entry in reversed(env.sys_path):
+        useUserSite = True
+        paths = env.sys_path
+        if useUserSite and env.get_paths().get('usersite'):
+            paths += [env.get_paths().get('usersite')]
+
+        for entry in reversed(paths):
             if not entry.strip():
                 logger.debug(
                     "Project environment contains an empty path in <c1>sys_path</>,"

@@ -1476,13 +1476,13 @@ class Env:
         cmd = pip + list(args)
         return self._run(cmd, **kwargs)
 
-    def run_python_script(self, content: str, **kwargs: Any) -> str:
+    def run_python_script(self, content: str, isolate=True, **kwargs: Any) -> str:
+        args = [self._executable]
+        if isolate:
+            args.append("-I")
+        args += ["-W", "ignore", "-"]
         return self.run(
-            self._executable,
-            "-I",
-            "-W",
-            "ignore",
-            "-",
+            *args,
             input_=content,
             stderr=subprocess.PIPE,
             **kwargs,
@@ -1823,7 +1823,7 @@ class GenericEnv(VirtualEnv):
                 self._pip_executable = pip_executable
 
     def get_paths(self) -> dict[str, str]:
-        output = self.run_python_script(GET_PATHS_FOR_GENERIC_ENVS)
+        output = self.run_python_script(GET_PATHS_FOR_GENERIC_ENVS, isolate=False)
 
         paths: dict[str, str] = json.loads(output)
         return paths
@@ -1845,13 +1845,6 @@ class GenericEnv(VirtualEnv):
 
     def is_venv(self) -> bool:
         return self._path != self._base
-
-    @property
-    def sys_path(self) -> list[str]:
-        if self._child_env is not None:
-            return self._child_env.sys_path
-        else:
-            return super(VirtualEnv, self).sys_path
 
 class NullEnv(SystemEnv):
     def __init__(
