@@ -1474,7 +1474,14 @@ class Env:
     def run_pip(self, *args: str, **kwargs: Any) -> str:
         pip = self.get_pip_command()
         cmd = pip + list(args)
-        return self._run(cmd, **kwargs)
+        print('run_pip', cmd)
+        print()
+        print()
+        retval = self._run(cmd, **kwargs)
+        print('retval', retval)
+        print('------')
+        print()
+        return retval
 
     def run_python_script(self, content: str, isolate=True, **kwargs: Any) -> str:
         args = [self._executable]
