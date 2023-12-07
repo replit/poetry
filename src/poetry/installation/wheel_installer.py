@@ -72,6 +72,26 @@ class WheelDestination(SchemeDictionaryDestination):
 
         return RecordEntry(path, Hash(self.hash_algorithm, hash_), size)
 
+    def _path_with_destdir(self, scheme: Scheme, path: str) -> str:
+        if os.getenv("POETRY_USE_USER_SITE") == "1":
+            if scheme in ["platlib", "purelib"] and "usersite" in self.scheme_dict:
+                basepath = self.scheme_dict["usersite"]
+            elif scheme == "data" and "userbase" in self.scheme_dict:
+                basepath = self.scheme_dict["userbase"]
+            elif scheme == "scripts" and "userbase" in self.scheme_dict:
+                basepath = self.scheme_dict["userbase"] + "/bin"
+            else:
+                basepath = self.scheme_dict[scheme]
+        else:
+             basepath = self.scheme_dict[scheme]
+
+        file = os.path.join(basepath, path)
+        if self.destdir is not None:
+            file_path = Path(file)
+            rel_path = file_path.relative_to(file_path.anchor)
+            return os.path.join(self.destdir, rel_path)
+        return file
+
     def for_source(self, source: WheelFile) -> WheelDestination:
         scheme_dict = self.scheme_dict.copy()
 
