@@ -72,6 +72,8 @@ class WheelDestination(SchemeDictionaryDestination):
 
         return RecordEntry(path, Hash(self.hash_algorithm, hash_), size)
 
+    # method override to insert custom path mapping logic similar to in
+    # write_to_fs
     def _path_with_destdir(self, scheme: Scheme, path: str) -> str:
         if os.getenv("POETRY_USE_USER_SITE") == "1":
             if scheme in ["platlib", "purelib"] and "usersite" in self.scheme_dict:
