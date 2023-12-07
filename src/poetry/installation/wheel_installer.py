@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import platform
 import sys
+import os
 
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -40,7 +41,18 @@ class WheelDestination(SchemeDictionaryDestination):
         from installer.utils import copyfileobj_with_hashing
         from installer.utils import make_file_executable
 
-        target_path = Path(self.scheme_dict[scheme]) / path
+        if os.getenv("POETRY_USE_USER_SITE") == "1":
+            if scheme in ["platlib", "purelib"] and "usersite" in self.scheme_dict:
+                target_path = Path(self.scheme_dict["usersite"]) / path
+            elif scheme == "data" and "userbase" in self.scheme_dict:
+                target_path = Path(self.scheme_dict["userbase"]) / path
+            elif scheme == "scripts" and "userbase" in self.scheme_dict:
+                target_path = Path(self.scheme_dict["userbase"] + "/bin") / path
+            else:
+                target_path = Path(self.scheme_dict[scheme]) / path
+        else:
+            target_path = Path(self.scheme_dict[scheme]) / path
+        
         if target_path.exists():
             # Contrary to the base library we don't raise an error
             # here since it can break namespace packages (like Poetry's)

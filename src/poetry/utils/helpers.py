@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import subprocess
 import hashlib
 import io
 import os
@@ -95,6 +96,10 @@ def download_file(
     session: Authenticator | Session | None = None,
     chunk_size: int = 1024,
 ) -> None:
+    if os.getenv("POETRY_DOWNLOAD_WITH_CURL") == "1" and url.startswith("https://files.pythonhosted.org/"):
+        download_file_with_curl(url, str(dest))
+        return
+
     import requests
 
     from poetry.puzzle.provider import Indicator
@@ -133,6 +138,11 @@ def download_file(
                             last_percent = percent
                             update_context(f"Downloading {url} {percent:3}%")
 
+def download_file_with_curl(
+    url: str,
+    dest: str,
+) -> None:
+    subprocess.run(['curl', url, '--silent', '--output', dest])
 
 def get_package_version_display_string(
     package: Package, root: Path | None = None
