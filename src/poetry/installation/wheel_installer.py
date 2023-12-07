@@ -42,6 +42,9 @@ class WheelDestination(SchemeDictionaryDestination):
         from installer.utils import make_file_executable
 
         if os.getenv("POETRY_USE_USER_SITE") == "1":
+            # this remapping of the base target path allows the modern installer
+            # to write files into the userbase directory (.pythonlibs) instead of the system python
+            # directory which are readonly in a Nix installation
             if scheme in ["platlib", "purelib"] and "usersite" in self.scheme_dict:
                 target_path = Path(self.scheme_dict["usersite"]) / path
             elif scheme == "data" and "userbase" in self.scheme_dict:
