@@ -142,7 +142,7 @@ def download_file_with_curl(
     url: str,
     dest: str,
 ) -> None:
-    subprocess.run(['curl', url, '--silent', '--output', dest])
+    subprocess.run(['curl', url, '--silent', '--output', dest], check=True)
 
 def get_package_version_display_string(
     package: Package, root: Path | None = None
