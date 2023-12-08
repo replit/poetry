@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import logging
 import re
 
@@ -101,7 +100,7 @@ class Application(BaseApplication):
         self._poetry: Poetry | None = None
         self._io: IO | None = None
         self._disable_plugins = False
-        self._disable_cache = os.getenv("POETRY_DISABLE_CACHE") == "1"
+        self._disable_cache = False
         self._plugins_loaded = False
 
         dispatcher = EventDispatcher()
