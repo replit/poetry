@@ -871,6 +871,9 @@ class Executor:
 
         url = str(link)
         if os.getenv("POETRY_DOWNLOAD_WITH_CURL") == "1" and url.startswith("https://files.pythonhosted.org/"):
+            if self.supports_fancy_output():
+                operation_message = self.get_operation_message(operation)
+                self._write(operation, f"  <fg=blue;options=bold>•</> {operation_message}: <info>Downloading...</>")
             download_file_with_curl(url, str(archive))
             return archive
 
