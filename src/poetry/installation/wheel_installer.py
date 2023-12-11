@@ -41,20 +41,8 @@ class WheelDestination(SchemeDictionaryDestination):
         from installer.utils import copyfileobj_with_hashing
         from installer.utils import make_file_executable
 
-        if os.getenv("POETRY_USE_USER_SITE") == "1":
-            # this remapping of the base target path allows the modern installer
-            # to write files into the userbase directory (.pythonlibs) instead of the system python
-            # directory which are readonly in a Nix installation
-            if scheme in ["platlib", "purelib"] and "usersite" in self.scheme_dict:
-                target_path = Path(self.scheme_dict["usersite"]) / path
-            elif scheme == "data" and "userbase" in self.scheme_dict:
-                target_path = Path(self.scheme_dict["userbase"]) / path
-            elif scheme == "scripts" and "userbase" in self.scheme_dict:
-                target_path = Path(self.scheme_dict["userbase"] + "/bin") / path
-            else:
-                target_path = Path(self.scheme_dict[scheme]) / path
-        else:
-            target_path = Path(self.scheme_dict[scheme]) / path
+        basepath = self.get_base_path(scheme)
+        target_path = Path(basepath) / path
         
         if target_path.exists():
             # Contrary to the base library we don't raise an error
@@ -74,21 +62,11 @@ class WheelDestination(SchemeDictionaryDestination):
             make_file_executable(target_path)
 
         return RecordEntry(path, Hash(self.hash_algorithm, hash_), size)
-
+    
     # method override to insert custom path mapping logic similar to in
     # write_to_fs
     def _path_with_destdir(self, scheme: Scheme, path: str) -> str:
-        if os.getenv("POETRY_USE_USER_SITE") == "1":
-            if scheme in ["platlib", "purelib"] and "usersite" in self.scheme_dict:
-                basepath = self.scheme_dict["usersite"]
-            elif scheme == "data" and "userbase" in self.scheme_dict:
-                basepath = self.scheme_dict["userbase"]
-            elif scheme == "scripts" and "userbase" in self.scheme_dict:
-                basepath = self.scheme_dict["userbase"] + "/bin"
-            else:
-                basepath = self.scheme_dict[scheme]
-        else:
-             basepath = self.scheme_dict[scheme]
+        basepath = self.get_base_path(scheme)
 
         file = os.path.join(basepath, path)
         if self.destdir is not None:
@@ -96,6 +74,19 @@ class WheelDestination(SchemeDictionaryDestination):
             rel_path = file_path.relative_to(file_path.anchor)
             return os.path.join(self.destdir, rel_path)
         return file
+
+    def get_base_path(self, scheme: Scheme) -> str:
+        basepath = None
+        if os.getenv("POETRY_USE_USER_SITE") == "1":
+            if scheme in ["platlib", "purelib"] and "usersite" in self.scheme_dict:
+                basepath = self.scheme_dict["usersite"]
+            elif scheme == "data" and "userbase" in self.scheme_dict:
+                basepath = self.scheme_dict["userbase"]
+            elif scheme == "scripts" and "userbase" in self.scheme_dict:
+                basepath = self.scheme_dict["userbase"] + "/bin"
+        if basepath is None:
+             basepath = self.scheme_dict[scheme]
+        return basepath
 
     def for_source(self, source: WheelFile) -> WheelDestination:
         scheme_dict = self.scheme_dict.copy()
