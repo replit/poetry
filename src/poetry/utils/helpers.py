@@ -97,8 +97,12 @@ def download_file(
     chunk_size: int = 1024,
 ) -> None:
     if os.getenv("POETRY_DOWNLOAD_WITH_CURL") == "1" and url.startswith("https://files.pythonhosted.org/"):
-        download_file_with_curl(url, str(dest))
-        return
+       try:
+            download_file_with_curl(url, str(dest))
+            return
+        except:
+            # If we failed to download with curl, give it another try with the local implementation
+            logging.exception('failed to download archive with curl. trying again')
 
     import requests
 
