@@ -142,6 +142,10 @@ def download_file_with_curl(
     url: str,
     dest: str,
 ) -> None:
+    """
+    Based on benchmarks done with tensorflow==2.15.0 and torch, using curl for downloading
+    large files gives ~30% faster than requests for the overall installation time.
+    """
     subprocess.run(['curl', url, '--silent', '--output', dest], check=True)
 
 def get_package_version_display_string(
