@@ -153,11 +153,8 @@ def download_file_with_curl(
     large files gives ~30% faster than requests for the overall installation time.
     """
     subprocess.run(
-        ['curl', url, '--silent', '--output', dest], 
+        ['curl', url, '--silent', '--output', dest],
         check=True,
-        env={
-          'LD_LIBRARY_PATH': ''
-        }
     )
 
 def get_package_version_display_string(
