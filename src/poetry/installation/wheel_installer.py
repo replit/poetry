@@ -99,7 +99,7 @@ class WheelDestination(SchemeDictionaryDestination):
                   sys.version_info.minor
                 )
                 source_distribution = self.scheme_dict["headers"].split("/")[-1]
-                basepath = str(Path(headers_path) / source_distribution)
+                basepath = "%s/%s" % (headers_path, source_distribution)
         if basepath is None:
              basepath = self.scheme_dict[scheme]
         return basepath
