@@ -432,7 +432,7 @@ class Locker:
             "python-versions": package.python_versions,
             "files": sorted(
                 package.files,
-                key=lambda x: x["file"],  # type: ignore[no-any-return]
+                key=lambda x: x["file"],
             ),
         }
 
