@@ -30,7 +30,7 @@ Changelog = "https://python-poetry.org/history/"
 
 # Requirements
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.10"
 
 poetry-core = "1.6.1"
 poetry-plugin-export = "^1.4.0"
@@ -60,7 +60,7 @@ tomli = { version = "^2.0.1", python = "<3.11" }
 tomlkit = ">=0.11.4,<1.0.0"
 # trove-classifiers uses calver, so version is unclamped
 trove-classifiers = ">=2022.5.19"
-virtualenv = "^20.22.0"
+virtualenv = "^20.29.2"
 xattr = { version = "^0.10.0", markers = "sys_platform == 'darwin'" }
 urllib3 = "^1.26.0"
 
