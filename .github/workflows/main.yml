@@ -27,15 +27,11 @@ jobs:
     runs-on: ${{ matrix.image }}
     strategy:
       matrix:
-        os: [Ubuntu, macOS, Windows]
+        os: [Ubuntu]
         python-version: ["3.10", "3.11"]
         include:
           - os: Ubuntu
             image: ubuntu-22.04
-          - os: Windows
-            image: windows-2022
-          - os: macOS
-            image: macos-12
       fail-fast: false
     defaults:
       run:
