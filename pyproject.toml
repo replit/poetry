@@ -80,7 +80,7 @@ pytest-xdist = { version = "^3.1", extras = ["psutil"] }
 zipp = { version = "^3.4", python = "<3.8" }
 
 [tool.poetry.group.typing.dependencies]
-mypy = ">=1.0"
+mypy = "1.4.1"
 types-html5lib = ">=1.1.9"
 types-jsonschema = ">=4.9.0"
 types-requests = ">=2.28.8"

@@ -355,7 +355,7 @@ class Git:
 
                 with repo:
                     try:
-                        revision = repo.open_index()[path].sha.decode("utf-8")
+                        revision = repo.open_index()[path].sha.decode("utf-8")  # type: ignore[union-attr]
                     except KeyError:
                         logger.debug(
                             "Skip submodule %s in %s, path %s not found",
